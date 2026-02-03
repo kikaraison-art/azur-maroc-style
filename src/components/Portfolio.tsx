@@ -1,52 +1,10 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { projects, type ProjectCategory } from "@/data/projects";
 
-import projectRiad from "@/assets/project-riad.jpg";
-import projectApartment from "@/assets/project-apartment.jpg";
-import projectHotel from "@/assets/project-hotel.jpg";
-import projectBoutique from "@/assets/project-boutique.jpg";
-
-type FilterType = "all" | "residential" | "professional";
-
-interface Project {
-  id: number;
-  title: string;
-  subtitle: string;
-  category: "residential" | "professional";
-  image: string;
-}
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Villa K",
-    subtitle: "Èze, Côte d'Azur",
-    category: "residential",
-    image: projectRiad,
-  },
-  {
-    id: 2,
-    title: "Appartement N",
-    subtitle: "Nice, France",
-    category: "residential",
-    image: projectApartment,
-  },
-  {
-    id: 3,
-    title: "Hôtel O",
-    subtitle: "Rabat, Maroc",
-    category: "professional",
-    image: projectHotel,
-  },
-  {
-    id: 4,
-    title: "Bazar Bio",
-    subtitle: "Marrakech, Maroc",
-    category: "professional",
-    image: projectBoutique,
-  },
-];
+type FilterType = "all" | ProjectCategory;
 
 const Portfolio = () => {
   const ref = useRef(null);
@@ -98,7 +56,7 @@ const Portfolio = () => {
           {/* Grid */}
           <motion.div
             layout
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
           >
             {filteredProjects.map((project, index) => (
               <motion.div
@@ -106,24 +64,28 @@ const Portfolio = () => {
                 layout
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                transition={{ duration: 0.8, delay: 0.2 + index * 0.1 }}
-                className="group cursor-pointer"
+                transition={{ duration: 0.8, delay: 0.1 + index * 0.05 }}
               >
-                <div className="image-hover aspect-[4/5] md:aspect-[4/3] lg:aspect-[4/5] mb-4">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-center">
-                  <h3 className="font-serif text-lg md:text-xl tracking-wider mb-1">
-                    {project.title}
-                  </h3>
-                  <p className="font-sans text-xs tracking-wider text-muted-foreground uppercase">
-                    {project.subtitle}
-                  </p>
-                </div>
+                <Link
+                  to={`/projet/${project.slug}`}
+                  className="group block cursor-pointer"
+                >
+                  <div className="image-hover aspect-[4/5] mb-4 overflow-hidden">
+                    <img
+                      src={project.mainImage}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-serif text-lg md:text-xl tracking-wider mb-1 group-hover:text-accent transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="font-sans text-xs tracking-wider text-muted-foreground uppercase">
+                      {project.subtitle}
+                    </p>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </motion.div>
