@@ -79,9 +79,14 @@ const ProjectInfo = ({ project }: ProjectInfoProps) => {
               <h3 className="font-sans text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
                 Lieu
               </h3>
-              <p className="font-serif text-sm tracking-wide">{project.subtitle}</p>
+              <p className="font-serif text-sm tracking-wide">
+                {project.region === "cote-azur" 
+                  ? `${project.subtitle.split(",")[0].trim()}, Côte d'Azur`
+                  : project.subtitle.split(",")[0].trim()
+                }
+              </p>
               <p className="font-sans text-xs tracking-wider text-muted-foreground mt-2 uppercase">
-                {project.region === "cote-azur" ? "Côte d'Azur" : "Maroc"}
+                {project.region === "cote-azur" ? "FRANCE" : "MAROC"}
               </p>
             </div>
           </motion.div>

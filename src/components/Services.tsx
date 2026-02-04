@@ -59,11 +59,6 @@ const Services = () => {
                 transition={{ duration: 0.8, delay: 0.2 + index * 0.15 }}
                 className="text-center"
               >
-                {/* Number */}
-                <span className="font-serif text-5xl md:text-6xl text-bronze/30 mb-6 block">
-                  0{index + 1}
-                </span>
-
                 {/* Title */}
                 <h3 className="font-serif text-xl md:text-2xl tracking-wider mb-2">
                   {service.title}
