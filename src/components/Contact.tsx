@@ -61,7 +61,7 @@ const Contact = () => {
 
           {/* Form - Netlify */}
           <motion.form
-            name="contact"
+            name="contact-form"
             method="POST"
             data-netlify="true"
             netlify-honeypot="bot-field"
@@ -71,7 +71,7 @@ const Contact = () => {
             className="space-y-6"
             action="/merci"
           >
-            <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="form-name" value="contact-form" />
             <input type="hidden" name="form-type" value={formType} />
             <input type="hidden" name="recipient" value="contact@severinepillot.com" />
             <p className="hidden">
