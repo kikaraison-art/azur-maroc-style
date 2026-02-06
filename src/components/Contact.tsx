@@ -1,14 +1,45 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Phone, Instagram } from "lucide-react";
+import { Phone, Instagram, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const GOOGLE_SCRIPT_URL = "VOTRE_URL_GOOGLE_APPS_SCRIPT";
 
 const Contact = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const navigate = useNavigate();
   const [formType, setFormType] = useState<"consultation" | "project">(
     "consultation"
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const data: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      navigate("/merci");
+    } catch {
+      setError("Une erreur est survenue. Veuillez réessayer.");
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="contact" className="section-padding bg-secondary">
@@ -59,26 +90,15 @@ const Contact = () => {
             </button>
           </motion.div>
 
-          {/* Form - Netlify */}
+          {/* Form - Google Apps Script */}
           <motion.form
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
+            onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="space-y-6"
-            action="/merci"
           >
-            <input type="hidden" name="form-name" value="contact" />
             <input type="hidden" name="form-type" value={formType} />
-            <input type="hidden" name="recipient" value="contact@severinepillot.com" />
-            <p className="hidden">
-              <label>
-                Ne pas remplir : <input name="bot-field" />
-              </label>
-            </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <input
@@ -146,9 +166,18 @@ const Contact = () => {
               className="input-minimal px-4 resize-none"
             />
 
+            {error && (
+              <p className="text-center text-destructive text-sm">{error}</p>
+            )}
+
             <div className="text-center pt-4">
-              <button type="submit" className="btn-minimal">
-                {formType === "consultation" ? "Demander un rendez-vous" : "Envoyer ma demande"}
+              <button type="submit" className="btn-minimal" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Envoi en cours...
+                  </span>
+                ) : formType === "consultation" ? "Demander un rendez-vous" : "Envoyer ma demande"}
               </button>
             </div>
           </motion.form>
